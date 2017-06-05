@@ -1,97 +1,107 @@
-describe("About Arrays", function() {
+describe("About Objects", function() {
 
-  // We shall contemplate truth by testing reality, via spec expectations.  
-  it("should create arrays", function() {
-    var emptyArray = [];
-    expect(typeof(emptyArray)).toBe(FILL_ME_IN); // A mistake?-- http:javascript.crockford.com/remedial.html
-    expect(emptyArray.length).toBe(FILL_ME_IN);
+  describe("Properties", function() {
+    var meglomaniac;
 
-    var multiTypeArray = [0, 1, "two", function() { return 3; }, {value1: 4, value2: 5}, [6, 7]];
-    expect(multiTypeArray[0]).toBe(FILL_ME_IN);
-    expect(multiTypeArray[2]).toBe(FILL_ME_IN);
-    expect(multiTypeArray[3]()).toBe(FILL_ME_IN);
-    expect(multiTypeArray[4].value1).toBe(FILL_ME_IN);
-    expect(multiTypeArray[4]["value2"]).toBe(FILL_ME_IN);
-    expect(multiTypeArray[5][0]).toBe(FILL_ME_IN);
+    beforeEach(function() {
+       meglomaniac = {  mastermind: "Joker", henchwoman: "Harley" };
+    });
+
+    it("should confirm objects are collections of properties", function() {
+      expect(meglomaniac.mastermind).toBe("Joker");
+    }); 
+
+    it("should confirm that properties are case sensitive", function() {
+      expect(meglomaniac.henchwoman).toBe("Harley");
+      expect(meglomaniac.henchWoman).toBe(undefined);``
+    });
+  });
+  
+
+  it("should know properties that are functions act like methods", function() {
+    var meglomaniac = { 
+      mastermind : "Brain", 
+      henchman: "Pinky",
+      battleCry: function(noOfBrains) {
+        return "They are " + this.henchman + " and the" +
+          Array(noOfBrains + 1).join(" " + this.mastermind);
+      }
+    };
+   
+    var battleCry = meglomaniac.battleCry(4);
+    expect(meglomaniac.battleCry(4)).toMatch(battleCry);
   });
 
-  it("should understand array literals", function() {
-    var array = [];
-    expect(array).toEqual([]);
-    
-    array[0] = 1;
-    expect(array).toEqual([1]);
-    
-    array[1] = 2;
-    expect(array).toEqual([1, FILL_ME_IN]);
-    
-    array.push(3);
-    expect(array).toEqual(FILL_ME_IN);
+  it("should confirm that when a function is attached to an object, 'this' refers to the object", function () {
+    var currentDate = new Date();
+    var currentYear = (currentDate.getFullYear());
+    var meglomaniac = { 
+      mastermind: "James Wood", 
+      henchman: "Adam West",
+      birthYear: 1970,
+      calculateAge: function() {
+        return currentYear - this.birthYear; 
+      }
+    };
+   
+    expect(currentYear).toBe(currentDate.getFullYear());
+    expect(meglomaniac.calculateAge()).toBe(47);
   });
 
-  it("should understand array length", function() {
-    var fourNumberArray = [1, 2, 3, 4];
+  describe("'in' keyword", function() {
+    var meglomaniac;
+    beforeEach(function() {
+      meglomaniac = { 
+        mastermind: "The Monarch", 
+        henchwoman: "Dr Girlfriend",
+        theBomb: true
+      };
+    });
 
-    expect(fourNumberArray.length).toBe(FILL_ME_IN);
-    fourNumberArray.push(5, 6);
-    expect(fourNumberArray.length).toBe(FILL_ME_IN);
+    it("should have the bomb", function() {
+      var hasBomb = "theBomb" in meglomaniac;
+     
+      expect(hasBomb).toBe(true);
+    });
 
-    var tenEmptyElementArray = new Array(10); 
-    expect(tenEmptyElementArray.length).toBe(FILL_ME_IN);
-
-    tenEmptyElementArray.length = 5;
-    expect(tenEmptyElementArray.length).toBe(FILL_ME_IN);
+    it("should not have the detonator however", function() {
+      var hasDetonator = "theDetonator" in meglomaniac;
+     
+      expect(hasDetonator).toBe(false);
+    });    
   });
 
-  it("should slice arrays", function() {
-    var array = ["peanut", "butter", "and", "jelly"];
+  it("should know that properties can be added and deleted", function() {
+    var meglomaniac = { mastermind : "Agent Smith", henchman: "Agent Smith" };
+
+    expect("secretary" in meglomaniac).toBe(false);
+
+    meglomaniac.secretary = "Agent Smith";
+    expect("secretary" in meglomaniac).toBe(true);
     
-    expect(array.slice(0, 1)).toEqual(FILL_ME_IN);
-    expect(array.slice(0, 2)).toEqual(FILL_ME_IN);
-    expect(array.slice(2, 2)).toEqual(FILL_ME_IN);
-    expect(array.slice(2, 20)).toEqual(FILL_ME_IN);
-    expect(array.slice(3, 0)).toEqual(FILL_ME_IN);
-    expect(array.slice(3, 100)).toEqual(FILL_ME_IN);
-    expect(array.slice(5, 1)).toEqual(FILL_ME_IN);
+    delete meglomaniac.henchman;
+    expect("henchman" in meglomaniac).toBe(false);
   });
 
-  it("should know array references", function() {
-    var array = [ "zero", "one", "two", "three", "four", "five" ];
 
-    function passedByReference(refArray) {
-      refArray[1] = "changed in function";
+  it("should use prototype to add to all objects", function() {
+    function Circle(radius)
+    {
+      this.radius = radius;
     }
-    passedByReference(array);
-    expect(array[1]).toBe(FILL_ME_IN);
 
-    var assignedArray = array;
-    assignedArray[5] = "changed in assignedArray";
-    expect(array[5]).toBe(FILL_ME_IN);
-
-    var copyOfArray = array.slice();
-    copyOfArray[3] = "changed in copyOfArray";
-    expect(array[3]).toBe(FILL_ME_IN);
-  });
-
-  it("should push and pop", function() {
-    var array = [1, 2];
-    array.push(3);
-
-    expect(array).toEqual(FILL_ME_IN);
+    var simpleCircle = new Circle(10);
+    var colouredCircle = new Circle(5);
+    colouredCircle.colour = "red";
     
-    var poppedValue = array.pop();
-    expect(poppedValue).toBe(FILL_ME_IN);
-    expect(array).toEqual(FILL_ME_IN);
+    expect(simpleCircle.colour).toBe(undefined);
+    expect(colouredCircle.colour).toBe("red");
+  
+    Circle.prototype.describe = function() {
+      return "This circle has a radius of: " + this.radius;
+    };
+  
+    expect(simpleCircle.describe()).toBe("This circle has a radius of: 10");
+    expect(colouredCircle.describe()).toBe("This circle has a radius of: 5");
   });
-
-  it("should know about shifting arrays", function() {
-    var array = [1, 2];
-
-    array.unshift(3);
-    expect(array).toEqual(FILL_ME_IN);
-    
-    var shiftedValue = array.shift();
-    expect(shiftedValue).toEqual(FILL_ME_IN);
-    expect(array).toEqual(FILL_ME_IN);
-  });  
 });
